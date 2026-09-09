@@ -4,18 +4,16 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { Player } from "@/lib/types";
 import { calculateEdpi, countryFlag } from "@/lib/data";
-import { useStoredPlayers } from "@/lib/player-storage";
 
 type SortKey = "handle" | "dpi" | "sens" | "updated";
 
 export default function PlayerBrowser({ players }: { players: Player[] }) {
-  const storedPlayers = useStoredPlayers(players);
   const [query, setQuery] = useState("");
   const [sort, setSort] = useState<SortKey>("updated");
 
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
-    let list = storedPlayers.filter(
+    let list = players.filter(
       (p) =>
         !q ||
         p.handle.toLowerCase().includes(q) ||
@@ -35,7 +33,7 @@ export default function PlayerBrowser({ players }: { players: Player[] }) {
       }
     });
     return list;
-  }, [storedPlayers, query, sort]);
+  }, [players, query, sort]);
 
   return (
     <div>
