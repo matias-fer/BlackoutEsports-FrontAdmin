@@ -1,24 +1,23 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { calculateEdpi, getGame, getPlayer, countryFlag, getPlayersByGame } from "@/lib/data";
-import { players } from "@/data/players";
+import { calculateEdpi, getGame, countryFlag } from "@/lib/data";
+import { getPlayer, getPlayersByGame } from "@/lib/api";
+
+export const dynamic = "force-dynamic";
 import SpecRow from "@/components/SpecRow";
 import CrosshairPreview from "@/components/CrosshairPreview";
 
-export function generateStaticParams() {
-  return players.map((p) => ({ game: p.game, playerId: p.id }));
-}
 
-export default function PlayerPage({
+export default async function PlayerPage({
   params,
 }: {
   params: { game: string; playerId: string };
 }) {
   const game = getGame(params.game);
-  const player = getPlayer(params.playerId);
+  const player = await getPlayer(params.playerId);
   if (!game || !player || player.game !== game.id) return notFound();
 
-  const teammates = getPlayersByGame(player.game).filter(
+  const teammates = (await getPlayersByGame(player.game)).filter(
     (p) => p.id !== player.id
   );
 
