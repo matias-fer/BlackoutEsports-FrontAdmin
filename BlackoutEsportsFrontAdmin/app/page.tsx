@@ -1,12 +1,13 @@
-"use client";
 
 import Link from "next/link";
-import { calculateEdpi, getFeaturedPlayers, getGames, countryFlag } from "@/lib/data";
-import { useStoredPlayers } from "@/lib/player-storage";
+import { calculateEdpi, getGames, countryFlag } from "@/lib/data";
+import { getFeaturedPlayers } from "@/lib/api";
 
-export default function HomePage() {
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
   const games = getGames();
-  const featured = useStoredPlayers(getFeaturedPlayers(4));
+  const featured = await getFeaturedPlayers(4);
 
   return (
     <main>
