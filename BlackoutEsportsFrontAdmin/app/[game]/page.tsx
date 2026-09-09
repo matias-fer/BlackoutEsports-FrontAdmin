@@ -1,17 +1,18 @@
 import { notFound } from "next/navigation";
-import { getGame, getGames, getPlayersByGame } from "@/lib/data";
+import { getGame } from "@/lib/data";
+import { getPlayersByGame } from "@/lib/api";
+
+export const dynamic = "force-dynamic";
+
 import PlayerBrowser from "@/components/PlayerBrowser";
 import { GameId } from "@/lib/types";
 
-export function generateStaticParams() {
-  return getGames().map((g) => ({ game: g.id }));
-}
 
-export default function GamePage({ params }: { params: { game: string } }) {
+export default async function GamePage({ params }: { params: { game: string } }) {
   const game = getGame(params.game);
   if (!game) return notFound();
 
-  const players = getPlayersByGame(game.id as GameId);
+  const players = await getPlayersByGame(game.id as GameId);
 
   return (
     <main className="mx-auto max-w-6xl px-6 py-14">
