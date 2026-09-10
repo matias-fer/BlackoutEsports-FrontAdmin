@@ -1,25 +1,27 @@
 {
-  "name": "blackout-esports",
-  "version": "0.1.0",
+  "name": "blackoutesportsfrontadmin",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "oxlint",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "next": "14.2.5",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "@azure/msal-browser": "^5.21.0",
+    "@azure/msal-react": "^5.7.0",
+    "bootstrap": "^5.3.8",
+    "react": "^19.2.8",
+    "react-bootstrap": "^2.10.10",
+    "react-dom": "^19.2.8"
   },
   "devDependencies": {
-    "typescript": "^5.5.4",
-    "@types/react": "^18.3.3",
-    "@types/react-dom": "^18.3.0",
-    "@types/node": "^20.14.15",
-    "tailwindcss": "^3.4.7",
-    "postcss": "^8.4.40",
-    "autoprefixer": "^10.4.19"
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "@vitejs/plugin-react": "^6.1.0",
+    "oxlint": "^1.79.0",
+    "vite": "^8.2.2"
   }
 }

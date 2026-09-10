@@ -1,0 +1,250 @@
+.admin-page {
+  border-top: 1px solid #3b171c;
+  min-height: 620px;
+  padding: 88px max(24px, calc((100% - 1100px) / 2));
+}
+
+.admin-page__heading {
+  align-items: end;
+  display: flex;
+  gap: 24px;
+  justify-content: space-between;
+  margin-bottom: 38px;
+}
+
+.admin-page h2 {
+  color: var(--text-light);
+  font-size: clamp(2rem, 4vw, 3.6rem);
+  letter-spacing: -0.05em;
+  line-height: 1;
+  margin: 0;
+}
+
+.admin-page__heading p:not(.page-eyebrow),
+.admin-page--message > p:not(.page-eyebrow) {
+  margin: 14px 0 0;
+}
+
+.admin-page__account {
+  border: 1px solid #4a252a;
+  color: var(--text-light);
+  font-size: 0.78rem;
+  padding: 10px 14px;
+}
+
+.admin-editor {
+  background: rgba(21, 21, 24, 0.94);
+  border: 1px solid #2b2b30;
+  display: grid;
+  grid-template-columns: 230px 1fr;
+}
+
+.admin-editor__players {
+  border-right: 1px solid #2b2b30;
+  display: flex;
+  flex-direction: column;
+}
+
+.admin-editor__players button {
+  background: transparent;
+  border: 0;
+  border-bottom: 1px solid #2b2b30;
+  color: var(--text-muted);
+  cursor: pointer;
+  display: grid;
+  gap: 4px;
+  padding: 16px;
+  text-align: left;
+}
+
+.admin-editor__players button:hover,
+.admin-editor__players button.is-selected {
+  background: #291317;
+  color: var(--text-light);
+}
+
+.admin-editor__players span {
+  font-size: 0.75rem;
+}
+
+.admin-editor__form {
+  padding: 30px;
+}
+
+.admin-editor__form--standalone {
+  background: rgba(21, 21, 24, 0.94);
+  border: 1px solid #2b2b30;
+}
+
+.admin-section {
+  margin-top: 46px;
+}
+
+.admin-section__heading {
+  align-items: end;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.admin-section__heading h3 {
+  color: var(--text-light);
+  font-size: 1.6rem;
+  margin: 0;
+}
+
+.admin-section__heading select {
+  background: var(--black-soft);
+  border: 1px solid #4a252a;
+  color: var(--text-light);
+  max-width: 300px;
+  padding: 10px 12px;
+}
+
+.admin-editor__grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.admin-editor__grid label {
+  display: grid;
+  gap: 7px;
+}
+
+.admin-editor__grid label span {
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.admin-editor__grid input {
+  background: var(--black-soft);
+  border: 1px solid #4a252a;
+  color: var(--text-light);
+  min-width: 0;
+  padding: 11px 14px;
+}
+
+.admin-peripherals {
+  border-top: 1px solid #2b2b30;
+  margin-top: 28px;
+  padding-top: 24px;
+}
+
+.admin-peripherals__title {
+  color: var(--text-light);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  margin: 0 0 16px;
+  text-transform: uppercase;
+}
+
+.admin-peripheral {
+  border: 1px solid #332b2e;
+  margin: 0 0 14px;
+  padding: 16px;
+}
+
+.admin-peripheral legend {
+  color: var(--red-bright);
+  float: none;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  padding: 0 8px;
+  text-transform: uppercase;
+  width: auto;
+}
+
+.admin-editor__save {
+  background: var(--red);
+  border: 1px solid var(--red);
+  color: var(--text-light);
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-top: 26px;
+  padding: 12px 18px;
+  text-transform: uppercase;
+}
+
+.admin-editor__save:hover,
+.admin-editor__save:focus {
+  background: var(--red-bright);
+}
+
+.admin-editor__actions {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.admin-editor__delete {
+  background: transparent;
+  border: 1px solid #71313a;
+  color: #ff8791;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  margin-top: 26px;
+  padding: 12px 18px;
+  text-transform: uppercase;
+}
+
+.admin-editor__delete:hover,
+.admin-editor__delete:focus {
+  background: #401b21;
+  border-color: #ff5362;
+  color: var(--text-light);
+}
+
+.admin-editor__message {
+  color: #8ee0a5;
+  display: inline-block;
+  font-size: 0.85rem;
+  margin: 0 0 0 16px;
+}
+
+.admin-page--message {
+  max-width: 700px;
+}
+
+@media (max-width: 700px) {
+  .admin-page__heading {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  .admin-editor {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-editor__players {
+    border-bottom: 1px solid #2b2b30;
+    border-right: 0;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-editor__grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-section__heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .admin-section__heading select {
+    max-width: none;
+    width: 100%;
+  }
+}
