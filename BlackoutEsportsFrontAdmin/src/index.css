@@ -1,0 +1,31 @@
+:root {
+  --black: #080808;
+  --black-soft: #111111;
+  --red: #e21b2d;
+  --red-bright: #ff3045;
+  --text-light: #f4f1eb;
+  --text-muted: #aaaab2;
+  font-family: 'Trebuchet MS', 'Segoe UI', sans-serif;
+  color: var(--text-muted);
+  background: var(--black);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+}
+
+a {
+  transition: color 180ms ease;
+}

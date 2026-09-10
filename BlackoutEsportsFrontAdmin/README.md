@@ -1,76 +1,32 @@
-# Blackout Esports
+# Blackout Esports Front Admin
 
-Web funcional de configuraciones de jugadores pro, hecha con el arquetipo estándar de
-**Next.js 14 (App Router) + TypeScript + Tailwind CSS**.
+## Configurar acceso administrativo con Microsoft Entra ID
 
-Todos los jugadores, equipos y marcas de periféricos son **ficticios**, creados
-para este prototipo.
+La web usa `@azure/msal-react` y muestra el panel `#admin` a cualquier cuenta autenticada. El inicio de sesión está configurado para el tenant indicado en `VITE_ENTRA_TENANT_ID`.
 
-## Estructura (arquetipo App Router)
+1. En **Microsoft Entra ID > Registros de aplicaciones**, crea o selecciona una aplicación de tipo SPA.
+2. En **Autenticación > Plataforma: Single-page application**, añade exactamente estas dos URI de redirección:
+	- `http://localhost:5173`
+	- `http://127.0.0.1:5173`
+	No las añadas como plataforma **Web** ni incluyas una barra final.
+3. Copia `.env.example` como `.env.local` y completa `VITE_ENTRA_TENANT_ID` y `VITE_ENTRA_CLIENT_ID`.
+4. Arranca la aplicación con `npm run dev` e inicia sesión desde **Iniciar sesión**.
 
-```
-app/
-  layout.tsx              # layout raíz, fuentes, navbar
-  page.tsx                # home: hero + grid de juegos + destacados
-  globals.css
-  [game]/
-    page.tsx               # listado + búsqueda/orden de jugadores de un juego
-    [playerId]/
-      page.tsx              # ficha completa: DPI, sens, mira, periféricos
-  not-found.tsx
-components/
-  Navbar.tsx
-  PlayerBrowser.tsx        # buscador/orden, client component
-  CrosshairPreview.tsx      # dibuja la mira en CSS
-  SpecRow.tsx
-data/
-  players.ts               # "base de datos" en memoria (juegos + jugadores)
-lib/
-  types.ts
-  data.ts                  # funciones de acceso a los datos
-```
+Los cambios del panel se guardan actualmente en `localStorage` del navegador. Para que varios administradores compartan los cambios y exista persistencia real, el siguiente paso es conectar el panel a una API protegida con el access token de Entra ID.
 
-## Cómo ejecutarlo
+## React + Vite
 
-Requiere Node.js 18.18+ (recomendado 20 LTS).
+This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
 
-```bash
-cd BlackoutEsports
-npm install
-npm run dev
-```
+Currently, two official plugins are available:
 
-Abre http://localhost:3000
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
 
-Build de producción:
+## React Compiler
 
-```bash
-npm run build
-npm run start
-```
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
 
-## Qué hace ya
+## Expanding the Oxlint configuration
 
-- Home con los 4 juegos (Valorant, CS2, Fortnite, Apex) y jugadores destacados.
-- Listado por juego con búsqueda en vivo (nombre/equipo/rol) y orden (reciente,
-  nombre, DPI, sensibilidad), tabla estilo hoja de datos.
-- Ficha de jugador: DPI, sensibilidad, eDPI, resolución, aspect ratio, Hz,
-  periféricos y, si aplica, vista previa de la mira dibujada en CSS.
-- Rutas dinámicas `[game]/[playerId]` generadas estáticamente (`generateStaticParams`).
-- Diseño propio (no genérico): paleta "panel de telemetría" oscura, tipografía
-  Space Grotesk + JetBrains Mono para los datos numéricos, motivo de mira/retícula.
-
-## Qué ampliaría primero
-
-1. **Datos reales y persistentes**: mover `data/players.ts` a una base de datos
-   (Postgres/SQLite con Prisma, o un CMS headless) para poder agregar/editar
-   jugadores sin tocar código y permitir contribuciones de la comunidad.
-2. **Comparador de jugadores**: seleccionar 2-3 jugadores y verlos lado a lado
-   (como ya haces con `comparison_card` en otras partes de esta conversación) —
-   es la función más pedida en este tipo de sitios.
-3. **Filtros combinados en el listado por juego**: por equipo, rol, rango de DPI
-   o eDPI, no solo búsqueda de texto libre.
-4. **Panel de "convertir mi sensibilidad"**: calculadora que traduce la sens/DPI
-   de un jugador a la sensibilidad equivalente en tu propio juego o mouse.
-5. **Imágenes reales** de jugadores/gear vía `next/image` con un CDN, y compartir
-   ficha de jugador (Open Graph dinámico por jugador).
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
