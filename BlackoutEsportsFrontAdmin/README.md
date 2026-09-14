@@ -2,7 +2,7 @@
 
 ## Configurar acceso administrativo con Microsoft Entra ID
 
-La web usa `@azure/msal-react` y muestra el panel `#admin` a cualquier cuenta autenticada. El inicio de sesión está configurado para el tenant indicado en `VITE_ENTRA_TENANT_ID`.
+La web usa exclusivamente Microsoft Entra ID mediante `@azure/msal-react` para iniciar sesión. El panel `#admin` se muestra a las cuentas con el rol `Admin` en el ID token. El inicio de sesión está configurado para el tenant indicado en `VITE_ENTRA_TENANT_ID`. Las antiguas cuentas y sesiones locales ya no se utilizan.
 
 1. En **Microsoft Entra ID > Registros de aplicaciones**, crea o selecciona una aplicación de tipo SPA.
 2. En **Autenticación > Plataforma: Single-page application**, añade exactamente estas dos URI de redirección:
