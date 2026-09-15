@@ -12,7 +12,20 @@ La web usa exclusivamente Microsoft Entra ID mediante `@azure/msal-react` para i
 3. Copia `.env.example` como `.env.local` y completa `VITE_ENTRA_TENANT_ID` y `VITE_ENTRA_CLIENT_ID`.
 4. Arranca la aplicación con `npm run dev` e inicia sesión desde **Iniciar sesión**.
 
-Los cambios del panel se guardan actualmente en `localStorage` del navegador. Para que varios administradores compartan los cambios y exista persistencia real, el siguiente paso es conectar el panel a una API protegida con el access token de Entra ID.
+Los torneos se consultan y guardan en el microservicio de torneos. Jugadores y roster mantienen su almacenamiento local actual.
+
+## Conexión de torneos
+
+1. Ejecuta BlackoutEsports-Tournaments-Backend, rama feature-tournaments, con `docker compose up --build`.
+2. Configura `VITE_TOURNAMENTS_API_URL=http://localhost:8082` en `.env.local` y reinicia Vite. No añadas `/api/tournaments` a esta variable.
+3. La página Torneos consulta la API. En el panel, selecciona un torneo para editarlo o eliminarlo, o «Agregar torneo» para crearlo. El panel sigue requiriendo Entra ID y rol Admin.
+4. Verifica que los cambios persisten al recargar. Los torneos antiguos del navegador no se migran automáticamente.
+
+El backend debe permitir el origen del frontend mediante CORS. Su configuración local incluye localhost:5173 y 127.0.0.1:5173. Los fallos de conexión muestran un error y la opción Reintentar.
+
+El envío y la validación del access token siguen pendientes: esta conexión usa el CRUD local actual, que todavía no protege sus operaciones. El rol de la interfaz no sustituye la autorización en el backend.
+
+Prueba del cliente HTTP: `node --test tests/tournaments-api.test.mjs`. Utiliza respuestas simuladas y no sustituye la prueba con PostgreSQL y Entra ID.
 
 ## React + Vite
 
