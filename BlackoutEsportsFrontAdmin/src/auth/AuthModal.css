@@ -7,6 +7,7 @@
   padding: 24px;
   position: fixed;
   z-index: 1100;
+  overflow-y: auto;
 }
 
 .auth-modal__panel {
@@ -171,7 +172,13 @@
 }
 
 @media (max-width: 520px) {
+  .auth-modal {
+    align-items: flex-start;
+    padding: 16px;
+  }
+
   .auth-modal__panel {
+    margin: auto 0;
     padding: 30px 22px;
   }
 }

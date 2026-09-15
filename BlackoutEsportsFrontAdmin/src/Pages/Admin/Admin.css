@@ -1,7 +1,7 @@
 .admin-page {
   border-top: 1px solid #3b171c;
   min-height: 620px;
-  padding: 88px max(24px, calc((100% - 1100px) / 2));
+  padding: clamp(56px, 8vw, 88px) max(16px, calc((100% - 1100px) / 2));
 }
 
 .admin-page__heading {
@@ -68,7 +68,8 @@
 }
 
 .admin-editor__form {
-  padding: 30px;
+  min-width: 0;
+  padding: clamp(20px, 4vw, 30px);
 }
 
 .admin-editor__form--standalone {
@@ -231,6 +232,10 @@
     border-right: 0;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .admin-editor__players button {
+    min-width: 0;
   }
 
   .admin-editor__grid {

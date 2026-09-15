@@ -93,20 +93,6 @@ const players = [
       { type: 'Headset', name: 'Arctis Nova Pro', specs: 'ANC · estación inalámbrica', search: 'SteelSeries Arctis Nova Pro Wireless' },
       { type: 'Monitor', name: 'ZOWIE XL2546K', specs: '24.5 pulgadas · 240 Hz · DyAc+', search: 'ZOWIE XL2546K' },
     ],
-    game: 'Valorant',
-    role: 'Controlador',
-    country: 'CL',
-    mouse: 'EC2-CW',
-    keyboard: 'Huntsman V3 Pro',
-    headset: 'BlackShark V2 Pro',
-    monitor: 'Alienware AW2524H',
-    sensitivity: '0.25 @ 800 DPI',
-    peripherals: [
-      { type: 'Mouse', name: 'EC2-CW', specs: '77 g · sensor 3370 · inalámbrico', search: 'ZOWIE EC2-CW' },
-      { type: 'Teclado', name: 'Huntsman V3 Pro', specs: 'Rapid Trigger · switches ópticos', search: 'Razer Huntsman V3 Pro' },
-      { type: 'Headset', name: 'BlackShark V2 Pro', specs: 'Audio espacial · 70 h de batería', search: 'Razer BlackShark V2 Pro' },
-      { type: 'Monitor', name: 'Alienware AW2524H', specs: '24.5 pulgadas · 500 Hz · IPS', search: 'Alienware AW2524H' },
-    ],
   },
 ]
 

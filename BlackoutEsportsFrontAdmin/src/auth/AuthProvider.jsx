@@ -4,7 +4,7 @@ import { ADMIN_ROLE, loginRequest } from '../authConfig'
 
 const SESSION_KEY = 'blackout-esports-session'
 const USERS_KEY = 'blackout-esports-users'
-const AuthContext = createContext(null)
+export const AuthContext = createContext(null)
 
 function normalizeUser(user) {
   return user ? {
@@ -81,7 +81,14 @@ export function AuthProvider({ children }) {
 
   const loginWithEntra = () => instance.loginRedirect(loginRequest)
 
-  return <AuthContext.Provider value={{ user, isAdmin: user?.role === 'admin', login, register, loginWithEntra, logout }}>{children}</AuthContext.Provider>
+  const getAccessToken = async () => {
+    const account = accounts[0]
+    if (!account) return null
+    const response = await instance.acquireTokenSilent({ ...loginRequest, account })
+    return response.accessToken
+  }
+
+  return <AuthContext.Provider value={{ user, isAdmin: user?.role === 'admin', login, register, loginWithEntra, logout, getAccessToken }}>{children}</AuthContext.Provider>
 }
 
 export function useAuth() {
