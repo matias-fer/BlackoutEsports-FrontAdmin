@@ -1,13 +1,17 @@
 import { useState } from 'react'
 import { useAuth } from './AuthProvider'
-import { entraIsConfigured } from '../authConfig'
+import { cognitoIsConfigured, entraIsConfigured } from '../authConfig'
 import './AuthModal.css'
 
 function AuthModal({ isOpen, onClose }) {
-  const { login, register, loginWithEntra } = useAuth()
+  const { login, register, loginWithEntra, loginWithCognito } = useAuth()
   const [mode, setMode] = useState('login')
   const [form, setForm] = useState({ name: '', email: '', password: '' })
   const [error, setError] = useState('')
+  const canUseEntra = window.location.protocol === 'https:'
+    || window.location.hostname === 'localhost'
+    || window.location.hostname === '127.0.0.1'
+  const canUseCognito = canUseEntra
 
   if (!isOpen) return null
 
@@ -55,22 +59,28 @@ function AuthModal({ isOpen, onClose }) {
           )}
           <label>
             <span>Correo electrónico</span>
-            <input required type="email" value={form.email} onChange={(event) => updateField('email', event.target.value)} placeholder="tu@email.com" />
+            <input required type="email" value={form.email} onChange={(event) => updateField('email', event.target.value)} placeholder="nombre@gmail.com" />
           </label>
           <label>
             <span>Contraseña</span>
-            <input required minLength="4" type="password" value={form.password} onChange={(event) => updateField('password', event.target.value)} placeholder="Mínimo 4 caracteres" />
+            <input required minLength="8" type="password" value={form.password} onChange={(event) => updateField('password', event.target.value)} placeholder="Mínimo 8 caracteres" />
           </label>
           {error && <p className="auth-modal__error" role="alert">{error}</p>}
           <button className="auth-modal__submit" type="submit">{isRegistering ? 'Crear cuenta' : 'Entrar'}</button>
         </form>
-        {entraIsConfigured && (
+        {entraIsConfigured && canUseEntra && (
           <>
             <div className="auth-modal__divider"><span>o</span></div>
-            <button className="auth-modal__entra" onClick={loginWithEntra} type="button">Entrar como administrador con Entra ID</button>
+            <button className="auth-modal__entra" onClick={loginWithEntra} type="button">Entrar con Entra ID</button>
           </>
         )}
-        <p className="auth-modal__note">Demo visual: tus datos se guardan únicamente en este navegador.</p>
+        {cognitoIsConfigured && canUseCognito && (
+          <>
+            <div className="auth-modal__divider"><span>o</span></div>
+            <button className="auth-modal__entra" onClick={loginWithCognito} type="button">Entrar con Amazon Cognito</button>
+          </>
+        )}
+        <p className="auth-modal__note">Tus datos se guardan únicamente en este navegador.</p>
       </section>
     </div>
   )

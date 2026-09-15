@@ -139,7 +139,32 @@
 }
 
 @media (max-width: 991px) {
+  .site-navbar__links {
+    align-items: stretch;
+  }
+
   .site-navbar__account {
     margin-top: 8px;
+  }
+
+  .site-navbar__action,
+  .site-navbar__account {
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 420px) {
+  .site-navbar {
+    padding: 10px 0;
+  }
+
+  .site-navbar__brand {
+    font-size: 0.88rem;
+    gap: 7px;
+  }
+
+  .site-navbar__mark {
+    height: 30px;
+    width: 30px;
   }
 }

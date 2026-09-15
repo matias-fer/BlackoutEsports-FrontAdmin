@@ -39,6 +39,7 @@
 
 .site-footer__links {
   display: flex;
+  flex-wrap: wrap;
   gap: 22px;
 }
 
@@ -62,5 +63,9 @@
 
   .site-footer__legal {
     margin-top: 0;
+  }
+
+  .site-footer__links {
+    gap: 12px 18px;
   }
 }

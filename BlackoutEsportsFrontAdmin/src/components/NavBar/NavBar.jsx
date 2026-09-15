@@ -15,7 +15,7 @@ function NavBar() {
     <Navbar expand="lg" className="site-navbar" variant="dark">
       <Container>
         <Navbar.Brand className="site-navbar__brand" href="#inicio">
-          <img className="site-navbar__mark" src="/BKL.png" alt="BKL" />
+          <img className="site-navbar__mark" src="/BKL_LOGO.png" alt="BKL" />
           Blackout <strong>Esports</strong>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="main-navigation" />

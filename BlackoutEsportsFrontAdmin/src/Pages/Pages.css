@@ -22,7 +22,7 @@ main {
 .intro {
   background: radial-gradient(circle at 75% 35%, rgba(53, 21, 26, 0.92) 0, rgba(8, 8, 8, 0.88) 48%, rgba(8, 8, 8, 0.78) 100%);
   min-height: 560px;
-  padding: 120px max(24px, calc((100% - 1100px) / 2));
+  padding: clamp(88px, 12vw, 120px) max(16px, calc((100% - 1100px) / 2));
 }
 
 .intro__eyebrow {
@@ -75,7 +75,7 @@ main {
 .home-players {
   background: rgba(13, 13, 15, 0.92);
   border-top: 1px solid #3b171c;
-  padding: 72px max(24px, calc((100% - 1100px) / 2));
+  padding: clamp(48px, 8vw, 72px) max(16px, calc((100% - 1100px) / 2));
 }
 
 .home-players__heading {
@@ -111,6 +111,7 @@ main {
   display: flex;
   gap: 20px;
   min-height: 190px;
+  min-width: 0;
   padding: 38px 12%;
 }
 
@@ -183,7 +184,7 @@ main {
 .players-page {
   background: transparent;
   border-top: 1px solid #3b171c;
-  padding: 88px max(24px, calc((100% - 1100px) / 2));
+  padding: clamp(56px, 8vw, 88px) max(16px, calc((100% - 1100px) / 2));
 }
 
 .players-page__heading {
@@ -217,7 +218,7 @@ main {
   background: var(--black-soft);
   border: 1px solid #4a252a;
   color: var(--text-light);
-  min-width: 190px;
+  min-width: min(190px, 42vw);
   padding: 11px 14px;
 }
 
@@ -249,6 +250,7 @@ main {
   align-items: center;
   display: flex;
   gap: 12px;
+  min-width: 0;
 }
 
 .player-card__avatar {
@@ -265,6 +267,9 @@ main {
 
 .player-card__alias,
 .player-card__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
   margin: 0;
 }
 
@@ -469,7 +474,7 @@ main {
 .tournaments-page {
   background: transparent;
   border-top: 1px solid #2b2b30;
-  padding: 80px max(24px, calc((100% - 1100px) / 2));
+  padding: clamp(56px, 8vw, 80px) max(16px, calc((100% - 1100px) / 2));
 }
 
 .tournaments-page__heading,
@@ -539,7 +544,7 @@ main {
 .roster-page {
   background: transparent;
   border-top: 1px solid #2b2b30;
-  padding: 80px max(24px, calc((100% - 1100px) / 2));
+  padding: clamp(56px, 8vw, 80px) max(16px, calc((100% - 1100px) / 2));
 }
 
 .roster-page__heading > p {
@@ -745,7 +750,17 @@ main {
   }
 
   .players-page__filters {
+    width: 100%;
     flex-wrap: wrap;
+  }
+
+  .players-page__filter {
+    flex: 1 1 140px;
+  }
+
+  .players-page__filter select {
+    min-width: 0;
+    width: 100%;
   }
 
   .players-grid,
@@ -782,6 +797,10 @@ main {
     grid-row: 2;
   }
 
+  .roster-player small {
+    overflow-wrap: anywhere;
+  }
+
   .player-detail {
     padding: 20px;
   }
@@ -808,6 +827,31 @@ main {
   }
 
   .home-player-slide {
-    padding: 32px 15%;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    padding: 32px 14%;
+  }
+
+  .home-player-slide > div:nth-child(2) {
+    min-width: 0;
+  }
+
+  .home-player-slide__country {
+    flex-basis: 100%;
+    margin-left: 86px;
+  }
+}
+
+@media (max-width: 420px) {
+  .intro h1 {
+    font-size: clamp(2.5rem, 14vw, 3.5rem);
+  }
+
+  .home-player-slide {
+    padding-inline: 12%;
+  }
+
+  .home-player-slide__country {
+    margin-left: 0;
   }
 }
