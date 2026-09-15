@@ -3,6 +3,7 @@ import { useAuth } from '../../auth/AuthProvider'
 import { useCompetition } from '../../context/CompetitionContext'
 import { usePlayers } from '../../context/PlayersContext'
 import './Admin.css'
+import TournamentEditor from './TournamentEditor'
 
 const editableFields = [
   ['alias', 'Alias'],
@@ -12,13 +13,6 @@ const editableFields = [
   ['role', 'Rol'],
   ['country', 'País'],
   ['sensitivity', 'Sensibilidad'],
-]
-const tournamentFields = [
-  ['name', 'Nombre'],
-  ['game', 'Juego'],
-  ['status', 'Estado'],
-  ['date', 'Fecha'],
-  ['teams', 'Equipos'],
 ]
 const teamFields = [
   ['name', 'Nombre'],
@@ -44,13 +38,11 @@ const emptyPlayer = {
 function Admin() {
   const { user, isAdmin } = useAuth()
   const { players, savePlayers, addPlayer } = usePlayers()
-  const { tournaments, teams, saveCompetition } = useCompetition()
+  const { teams, saveCompetition } = useCompetition()
   const [selectedAlias, setSelectedAlias] = useState(players[0]?.alias || '')
   const selectedPlayer = players.find((player) => player.alias === selectedAlias)
   const [draft, setDraft] = useState(selectedPlayer)
   const [newPlayer, setNewPlayer] = useState(emptyPlayer)
-  const [selectedTournament, setSelectedTournament] = useState(tournaments[0]?.name || '')
-  const [tournamentDraft, setTournamentDraft] = useState(tournaments[0])
   const [selectedTeam, setSelectedTeam] = useState(teams[0]?.name || '')
   const [teamDraft, setTeamDraft] = useState(teams[0])
   const [message, setMessage] = useState('')
@@ -108,16 +100,10 @@ function Admin() {
     setMessage('Jugador agregado en este navegador.')
   }
 
-  const saveTournament = (event) => {
-    event.preventDefault()
-    saveCompetition({ tournaments: tournaments.map((item) => item.name === selectedTournament ? tournamentDraft : item), teams })
-    setSelectedTournament(tournamentDraft.name)
-    setMessage('Torneo actualizado en este navegador.')
-  }
 
   const saveTeam = (event) => {
     event.preventDefault()
-    saveCompetition({ tournaments, teams: teams.map((item) => item.name === selectedTeam ? teamDraft : item) })
+    saveCompetition({ teams: teams.map((item) => item.name === selectedTeam ? teamDraft : item) })
     setSelectedTeam(teamDraft.name)
     setMessage('Roster actualizado en este navegador.')
   }
@@ -184,20 +170,7 @@ function Admin() {
           <button className="admin-editor__save" type="submit">Agregar jugador</button>
         </form>
       </section>
-      <section className="admin-section">
-        <div className="admin-section__heading">
-          <div><p className="page-eyebrow">Calendario competitivo</p><h3>Modificar torneo</h3></div>
-          <select value={selectedTournament} onChange={(event) => { setSelectedTournament(event.target.value); setTournamentDraft(tournaments.find((item) => item.name === event.target.value)) }}>
-            {tournaments.map((tournament) => <option key={tournament.name}>{tournament.name}</option>)}
-          </select>
-        </div>
-        <form className="admin-editor__form admin-editor__form--standalone" onSubmit={saveTournament}>
-          <div className="admin-editor__grid">
-            {tournamentFields.map(([field, label]) => <label key={field}><span>{label}</span><input required value={tournamentDraft?.[field] || ''} onChange={(event) => setTournamentDraft((current) => ({ ...current, [field]: event.target.value }))} /></label>)}
-          </div>
-          <button className="admin-editor__save" type="submit">Guardar torneo</button>
-        </form>
-      </section>
+      <TournamentEditor />
       <section className="admin-section">
         <div className="admin-section__heading">
           <div><p className="page-eyebrow">Alineaciones</p><h3>Modificar roster</h3></div>
