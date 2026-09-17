@@ -1,6 +1,20 @@
 import { render, screen } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { vi } from 'vitest'
 import { PlayersProvider, usePlayers } from './PlayersContext'
+
+vi.mock('../auth/AuthProvider', () => ({
+  useAuth: () => ({ user: null, getAccessToken: async () => 'access-token' }),
+}))
+
+vi.mock('../api/players', () => ({
+  playersApi: {
+    list: vi.fn(),
+    create: vi.fn(async (player) => ({ ...player, id: 'test-player' })),
+    update: vi.fn(),
+    delete: vi.fn(),
+  },
+}))
 
 function PlayersProbe() {
   const { players, addPlayer } = usePlayers()
@@ -16,8 +30,6 @@ function PlayersProbe() {
 }
 
 describe('PlayersContext', () => {
-  beforeEach(() => window.localStorage.clear())
-
   it('carga los jugadores iniciales', () => {
     render(
       <PlayersProvider>
@@ -28,7 +40,7 @@ describe('PlayersContext', () => {
     expect(Number(screen.getByTestId('player-count').textContent)).toBeGreaterThan(0)
   })
 
-  it('agrega y persiste un jugador', async () => {
+  it('agrega un jugador devuelto por el microservicio', async () => {
     const user = userEvent.setup()
 
     render(
@@ -40,7 +52,6 @@ describe('PlayersContext', () => {
     const initialCount = Number(screen.getByTestId('player-count').textContent)
     await user.click(screen.getByRole('button', { name: 'Agregar jugador' }))
 
-    expect(screen.getByTestId('player-count')).toHaveTextContent(String(initialCount + 1))
-    expect(window.localStorage.getItem('blackout-admin-players')).toContain('TestPlayer')
+    expect(await screen.findByText(String(initialCount + 1))).toBeInTheDocument()
   })
 })
