@@ -8,8 +8,6 @@ import './Pages/Pages.css'
 import App from './App.jsx'
 import AppErrorBoundary from './components/AppErrorBoundary'
 import { AuthProvider } from './auth/AuthProvider'
-import LocalAuthProvider from './auth/LocalAuthProvider'
-import CognitoProvider from './auth/CognitoProvider'
 import { cognitoConfig, cognitoIsConfigured, msalConfig } from './authConfig'
 import { PlayersProvider } from './context/PlayersContext'
 import { CompetitionProvider } from './context/CompetitionContext'
@@ -17,17 +15,6 @@ import { CompetitionProvider } from './context/CompetitionContext'
 const isSecureOrigin = window.location.protocol === 'https:'
   || window.location.hostname === 'localhost'
   || window.location.hostname === '127.0.0.1'
-const app = (
-  <AppErrorBoundary>
-    <PlayersProvider>
-      <CompetitionProvider>
-        <App />
-      </CompetitionProvider>
-    </PlayersProvider>
-  </AppErrorBoundary>
-)
-const cognitoApp = <CognitoProvider>{app}</CognitoProvider>
-
 async function startApp() {
   try {
     if (cognitoIsConfigured && isSecureOrigin) {
@@ -40,7 +27,7 @@ async function startApp() {
             loginWith: {
               oauth: {
                 domain: cognitoConfig.domain,
-                scopes: ['openid', 'email', 'profile'],
+                scopes: ['openid', 'email'],
                 redirectSignIn: [cognitoConfig.redirectUri],
                 redirectSignOut: [cognitoConfig.logoutUri],
                 responseType: 'code',
@@ -49,8 +36,6 @@ async function startApp() {
           },
         },
       })
-      createRoot(document.getElementById('root')).render(<StrictMode>{cognitoApp}</StrictMode>)
-      return
     }
 
     if (isSecureOrigin) {
@@ -59,7 +44,15 @@ async function startApp() {
       createRoot(document.getElementById('root')).render(
         <StrictMode>
           <MsalProvider instance={msalInstance}>
-            <AuthProvider>{app}</AuthProvider>
+            <AuthProvider>
+              <AppErrorBoundary>
+                <PlayersProvider>
+                  <CompetitionProvider>
+                    <App />
+                  </CompetitionProvider>
+                </PlayersProvider>
+              </AppErrorBoundary>
+            </AuthProvider>
           </MsalProvider>
         </StrictMode>,
       )
@@ -68,11 +61,7 @@ async function startApp() {
   } catch {
   }
 
-  createRoot(document.getElementById('root')).render(
-    <StrictMode>
-      <LocalAuthProvider>{app}</LocalAuthProvider>
-    </StrictMode>,
-  )
+  createRoot(document.getElementById('root')).render(<AppErrorBoundary><p>La autenticación requiere HTTPS o localhost.</p></AppErrorBoundary>)
 }
 
 startApp()

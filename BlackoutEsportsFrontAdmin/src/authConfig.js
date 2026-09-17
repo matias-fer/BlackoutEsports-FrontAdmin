@@ -2,8 +2,9 @@ const tenantId = import.meta.env.VITE_ENTRA_TENANT_ID
 const clientId = import.meta.env.VITE_ENTRA_CLIENT_ID
 const authority = import.meta.env.VITE_ENTRA_AUTHORITY || `https://login.microsoftonline.com/${tenantId || 'common'}`
 const redirectUri = import.meta.env.VITE_ENTRA_REDIRECT_URI || 'http://localhost:5173'
+const apiScope = import.meta.env.VITE_ENTRA_API_SCOPE
 
-export const entraIsConfigured = Boolean(tenantId && clientId)
+export const entraIsConfigured = Boolean(tenantId && clientId && apiScope)
 
 export const msalConfig = {
   auth: {
@@ -19,10 +20,11 @@ export const msalConfig = {
 }
 
 export const loginRequest = {
-  scopes: ['openid', 'profile', 'email'],
+  scopes: apiScope ? [apiScope] : [],
 }
 
 export const ADMIN_ROLE = 'Admin'
+export const STAFF_ROLE = 'Staff'
 
 export const cognitoConfig = {
   userPoolId: import.meta.env.VITE_COGNITO_USER_POOL_ID,
