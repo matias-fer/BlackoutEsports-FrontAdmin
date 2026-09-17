@@ -213,6 +213,20 @@
   margin: 0 0 0 16px;
 }
 
+.admin-editor__error {
+  background: #35171c;
+  border: 1px solid #71313a;
+  color: #ffb1b8;
+  margin: 0 0 22px;
+  padding: 12px 14px;
+}
+
+.admin-editor__save:disabled,
+.admin-editor__delete:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
 .admin-page--message {
   max-width: 700px;
 }

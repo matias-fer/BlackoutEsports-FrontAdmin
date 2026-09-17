@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useAuth } from '../../auth/AuthProvider'
 import { useCompetition } from '../../context/CompetitionContext'
 import { usePlayers } from '../../context/PlayersContext'
@@ -42,9 +42,9 @@ const emptyPlayer = {
 }
 
 function Admin() {
-  const { user, isAdmin } = useAuth()
-  const { players, savePlayers, addPlayer } = usePlayers()
-  const { tournaments, teams, saveCompetition } = useCompetition()
+  const { user, isAdmin, authError } = useAuth()
+  const { players, playersError, addPlayer, updatePlayer, deletePlayer } = usePlayers()
+  const { tournaments, teams, competitionError, updateTournament, updateTeam } = useCompetition()
   const [selectedAlias, setSelectedAlias] = useState(players[0]?.alias || '')
   const selectedPlayer = players.find((player) => player.alias === selectedAlias)
   const [draft, setDraft] = useState(selectedPlayer)
@@ -54,6 +54,25 @@ function Admin() {
   const [selectedTeam, setSelectedTeam] = useState(teams[0]?.name || '')
   const [teamDraft, setTeamDraft] = useState(teams[0])
   const [message, setMessage] = useState('')
+  const [isSaving, setIsSaving] = useState(false)
+
+  useEffect(() => {
+    const nextPlayer = players.find((player) => player.alias === selectedAlias) || players[0]
+    setSelectedAlias(nextPlayer?.alias || '')
+    setDraft(nextPlayer)
+  }, [players, selectedAlias])
+
+  useEffect(() => {
+    const nextTournament = tournaments.find((item) => item.id === tournamentDraft?.id) || tournaments[0]
+    setSelectedTournament(nextTournament?.id || '')
+    setTournamentDraft(nextTournament)
+  }, [tournaments, tournamentDraft?.id])
+
+  useEffect(() => {
+    const nextTeam = teams.find((item) => item.id === teamDraft?.id) || teams[0]
+    setSelectedTeam(nextTeam?.id || '')
+    setTeamDraft(nextTeam)
+  }, [teams, teamDraft?.id])
 
   const selectPlayer = (alias) => {
     setSelectedAlias(alias)
@@ -76,50 +95,70 @@ function Admin() {
     )),
   }))
 
-  const saveDraft = (event) => {
-    event.preventDefault()
-    const nextPlayers = players.map((player) => (
-      player.alias === selectedAlias ? { ...player, ...draft } : player
-    ))
-    savePlayers(nextPlayers)
-    setSelectedAlias(draft.alias)
-    setMessage('Cambios guardados en este navegador.')
+  const runOperation = async (operation, successMessage) => {
+    setIsSaving(true)
+    setMessage('')
+    try {
+      const result = await operation()
+      setMessage(successMessage)
+      return { ok: true, value: result }
+    } catch (error) {
+      setMessage(error.message || 'No fue posible completar la operación.')
+      return { ok: false, value: null }
+    } finally {
+      setIsSaving(false)
+    }
   }
 
-  const deletePlayer = () => {
+  const saveDraft = async (event) => {
+    event.preventDefault()
+    const result = await runOperation(() => updatePlayer(draft), 'Jugador actualizado en el microservicio.')
+    if (result.ok) {
+      setSelectedAlias(result.value.alias)
+      setDraft(result.value)
+    }
+  }
+
+  const removePlayer = async () => {
     if (!draft || !window.confirm(`¿Eliminar a ${draft.alias}? Esta acción no se puede deshacer.`)) return
 
-    const nextPlayers = players.filter((player) => player.alias !== selectedAlias)
-    savePlayers(nextPlayers)
-    const nextPlayer = nextPlayers[0]
-    setSelectedAlias(nextPlayer?.alias || '')
-    setDraft(nextPlayer)
-    setMessage('Jugador eliminado de este navegador.')
+    const result = await runOperation(() => deletePlayer(draft.id), 'Jugador eliminado del microservicio.')
+    if (result.ok) {
+      const nextPlayer = players.find((player) => player.id !== draft.id)
+      setSelectedAlias(nextPlayer?.alias || '')
+      setDraft(nextPlayer)
+    }
   }
 
-  const saveNewPlayer = (event) => {
+  const saveNewPlayer = async (event) => {
     event.preventDefault()
     if (players.some((player) => player.alias.toLowerCase() === newPlayer.alias.trim().toLowerCase())) {
       setMessage('Ese alias ya existe.')
       return
     }
-    addPlayer({ ...newPlayer, alias: newPlayer.alias.trim(), name: newPlayer.name.trim(), team: newPlayer.team.trim() })
-    setNewPlayer(emptyPlayer)
-    setMessage('Jugador agregado en este navegador.')
+    const result = await runOperation(
+      () => addPlayer({ ...newPlayer, alias: newPlayer.alias.trim(), name: newPlayer.name.trim(), team: newPlayer.team.trim() }),
+      'Jugador creado en el microservicio.',
+    )
+    if (result.ok) setNewPlayer(emptyPlayer)
   }
 
-  const saveTournament = (event) => {
+  const saveTournament = async (event) => {
     event.preventDefault()
-    saveCompetition({ tournaments: tournaments.map((item) => item.name === selectedTournament ? tournamentDraft : item), teams })
-    setSelectedTournament(tournamentDraft.name)
-    setMessage('Torneo actualizado en este navegador.')
+    const result = await runOperation(() => updateTournament(tournamentDraft), 'Torneo actualizado en el microservicio.')
+    if (result.ok) {
+      setSelectedTournament(result.value.id)
+      setTournamentDraft(result.value)
+    }
   }
 
-  const saveTeam = (event) => {
+  const saveTeam = async (event) => {
     event.preventDefault()
-    saveCompetition({ tournaments, teams: teams.map((item) => item.name === selectedTeam ? teamDraft : item) })
-    setSelectedTeam(teamDraft.name)
-    setMessage('Roster actualizado en este navegador.')
+    const result = await runOperation(() => updateTeam(teamDraft), 'Roster actualizado en el microservicio.')
+    if (result.ok) {
+      setSelectedTeam(result.value.id)
+      setTeamDraft(result.value)
+    }
   }
 
   if (!user) {
@@ -140,6 +179,9 @@ function Admin() {
         </div>
         <span className="admin-page__account">{user.email}</span>
       </div>
+      {(authError || playersError || competitionError) && (
+        <p className="admin-editor__error" role="alert">{[authError, playersError, competitionError].filter(Boolean).join(' ')}</p>
+      )}
       <div className="admin-editor">
         <nav className="admin-editor__players" aria-label="Seleccionar jugador">
           {players.map((player) => (
@@ -160,8 +202,8 @@ function Admin() {
             </div>
             <PeripheralFields peripherals={draft.peripherals} onChange={updatePeripheral} />
             <div className="admin-editor__actions">
-              <button className="admin-editor__save" type="submit">Guardar cambios</button>
-              <button className="admin-editor__delete" onClick={deletePlayer} type="button">Eliminar jugador</button>
+              <button className="admin-editor__save" disabled={isSaving} type="submit">Guardar cambios</button>
+              <button className="admin-editor__delete" disabled={isSaving} onClick={removePlayer} type="button">Eliminar jugador</button>
             </div>
             {message && <p className="admin-editor__message" role="status">{message}</p>}
           </form>
@@ -181,35 +223,35 @@ function Admin() {
             ))}
           </div>
           <PeripheralFields peripherals={newPlayer.peripherals} onChange={updateNewPeripheral} />
-          <button className="admin-editor__save" type="submit">Agregar jugador</button>
+          <button className="admin-editor__save" disabled={isSaving} type="submit">Agregar jugador</button>
         </form>
       </section>
       <section className="admin-section">
         <div className="admin-section__heading">
           <div><p className="page-eyebrow">Calendario competitivo</p><h3>Modificar torneo</h3></div>
-          <select value={selectedTournament} onChange={(event) => { setSelectedTournament(event.target.value); setTournamentDraft(tournaments.find((item) => item.name === event.target.value)) }}>
-            {tournaments.map((tournament) => <option key={tournament.name}>{tournament.name}</option>)}
+          <select value={selectedTournament} onChange={(event) => { const id = Number(event.target.value); setSelectedTournament(id); setTournamentDraft(tournaments.find((item) => item.id === id)) }}>
+            {tournaments.map((tournament) => <option key={tournament.id || tournament.name} value={tournament.id || ''}>{tournament.name}</option>)}
           </select>
         </div>
         <form className="admin-editor__form admin-editor__form--standalone" onSubmit={saveTournament}>
           <div className="admin-editor__grid">
             {tournamentFields.map(([field, label]) => <label key={field}><span>{label}</span><input required value={tournamentDraft?.[field] || ''} onChange={(event) => setTournamentDraft((current) => ({ ...current, [field]: event.target.value }))} /></label>)}
           </div>
-          <button className="admin-editor__save" type="submit">Guardar torneo</button>
+          <button className="admin-editor__save" disabled={isSaving || !tournamentDraft?.id} type="submit">Guardar torneo</button>
         </form>
       </section>
       <section className="admin-section">
         <div className="admin-section__heading">
           <div><p className="page-eyebrow">Alineaciones</p><h3>Modificar roster</h3></div>
-          <select value={selectedTeam} onChange={(event) => { setSelectedTeam(event.target.value); setTeamDraft(teams.find((item) => item.name === event.target.value)) }}>
-            {teams.map((team) => <option key={team.name}>{team.name}</option>)}
+          <select value={selectedTeam} onChange={(event) => { const id = Number(event.target.value); setSelectedTeam(id); setTeamDraft(teams.find((item) => item.id === id)) }}>
+            {teams.map((team) => <option key={team.id || team.name} value={team.id || ''}>{team.name}</option>)}
           </select>
         </div>
         <form className="admin-editor__form admin-editor__form--standalone" onSubmit={saveTeam}>
           <div className="admin-editor__grid">
             {teamFields.map(([field, label]) => <label key={field}><span>{label}</span><input value={teamDraft?.[field] || ''} onChange={(event) => setTeamDraft((current) => ({ ...current, [field]: event.target.value }))} /></label>)}
           </div>
-          <button className="admin-editor__save" type="submit">Guardar roster</button>
+          <button className="admin-editor__save" disabled={isSaving || !teamDraft?.id} type="submit">Guardar roster</button>
         </form>
       </section>
     </section>
