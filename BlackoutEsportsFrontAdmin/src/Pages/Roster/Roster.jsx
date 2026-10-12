@@ -7,7 +7,11 @@ function Roster() {
   const { players } = usePlayers()
   const [selectedTeam, setSelectedTeam] = useState(null)
   const selectedPlayers = selectedTeam
-    ? players.filter((player) => player.team === selectedTeam.name)
+    ? players.filter((player) => (
+      selectedTeam.playerIds?.length
+        ? selectedTeam.playerIds.includes(String(player.id))
+        : player.team === selectedTeam.name
+    ))
     : []
 
   return (

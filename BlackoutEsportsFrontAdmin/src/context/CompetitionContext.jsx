@@ -57,11 +57,34 @@ export function CompetitionProvider({ children }) {
     return updated
   }, [withToken])
 
+  const addTournament = useCallback(async (tournament) => {
+    const created = await withToken((token) => tournamentsApi.create(tournament, token))
+    setTournaments((current) => [...current, created])
+    return created
+  }, [withToken])
+
+  const deleteTournament = useCallback(async (id) => {
+    await withToken((token) => tournamentsApi.delete(id, token))
+    setTournaments((current) => current.filter((item) => item.id !== id))
+  }, [withToken])
+
   const updateTeam = useCallback(async (team) => {
     const request = { game: 'Valorant', playerIds: [], ...team }
     const updated = await withToken((token) => rostersApi.update(request, token))
     setTeams((current) => current.map((item) => item.id === updated.id ? updated : item))
     return updated
+  }, [withToken])
+
+  const addTeam = useCallback(async (team) => {
+    const request = { game: 'Valorant', playerIds: [], ...team }
+    const created = await withToken((token) => rostersApi.create(request, token))
+    setTeams((current) => [...current, created])
+    return created
+  }, [withToken])
+
+  const deleteTeam = useCallback(async (id) => {
+    await withToken((token) => rostersApi.delete(id, token))
+    setTeams((current) => current.filter((item) => item.id !== id))
   }, [withToken])
 
   const value = useMemo(() => ({
@@ -70,9 +93,13 @@ export function CompetitionProvider({ children }) {
     competitionLoading,
     competitionError,
     reloadCompetition,
+    addTournament,
     updateTournament,
+    deleteTournament,
+    addTeam,
     updateTeam,
-  }), [competitionError, competitionLoading, reloadCompetition, teams, tournaments, updateTeam, updateTournament])
+    deleteTeam,
+  }), [addTeam, addTournament, competitionError, competitionLoading, deleteTeam, deleteTournament, reloadCompetition, teams, tournaments, updateTeam, updateTournament])
 
   return <CompetitionContext.Provider value={value}>{children}</CompetitionContext.Provider>
 }
