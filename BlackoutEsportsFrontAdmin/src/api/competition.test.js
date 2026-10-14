@@ -26,11 +26,11 @@ describe('clientes de competición', () => {
       playerIds: ['prinzcl', 'nightowl'],
     }])))
 
-    const result = await rostersApi.list('token-fan')
+    const result = await rostersApi.list()
 
     expect(result[0].playerIds).toEqual(['prinzcl', 'nightowl'])
     expect(fetch).toHaveBeenCalledWith('http://localhost:8084/api/rosters', expect.objectContaining({
-      headers: expect.objectContaining({ Authorization: 'Bearer token-fan' }),
+      headers: expect.not.objectContaining({ Authorization: expect.anything() }),
     }))
   })
 

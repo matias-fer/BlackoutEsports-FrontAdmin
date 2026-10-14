@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { vi } from 'vitest'
 import { PlayersProvider, usePlayers } from './PlayersContext'
@@ -9,7 +9,7 @@ vi.mock('../auth/AuthProvider', () => ({
 
 vi.mock('../api/players', () => ({
   playersApi: {
-    list: vi.fn(),
+    list: vi.fn(async () => [{ id: 'db-player', alias: 'Jugador DB' }]),
     create: vi.fn(async (player) => ({ ...player, id: 'test-player' })),
     update: vi.fn(),
     delete: vi.fn(),
@@ -30,14 +30,14 @@ function PlayersProbe() {
 }
 
 describe('PlayersContext', () => {
-  it('carga los jugadores iniciales', () => {
+  it('carga los jugadores públicos desde el microservicio sin iniciar sesión', async () => {
     render(
       <PlayersProvider>
         <PlayersProbe />
       </PlayersProvider>,
     )
 
-    expect(Number(screen.getByTestId('player-count').textContent)).toBeGreaterThan(0)
+    await waitFor(() => expect(screen.getByTestId('player-count')).toHaveTextContent('1'))
   })
 
   it('agrega un jugador devuelto por el microservicio', async () => {
@@ -49,6 +49,7 @@ describe('PlayersContext', () => {
       </PlayersProvider>,
     )
 
+    await waitFor(() => expect(screen.getByTestId('player-count')).toHaveTextContent('1'))
     const initialCount = Number(screen.getByTestId('player-count').textContent)
     await user.click(screen.getByRole('button', { name: 'Agregar jugador' }))
 

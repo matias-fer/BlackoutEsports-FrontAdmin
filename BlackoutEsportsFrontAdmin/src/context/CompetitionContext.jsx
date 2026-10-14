@@ -2,21 +2,12 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState } 
 import { rostersApi, tournamentsApi } from '../api/competition'
 import { useAuth } from '../auth/AuthProvider'
 
-const defaultTournaments = [
-  { name: 'OpsLeague', game: 'Valorant', status: 'En curso', date: 'EN VIVO', teams: '16 equipos' },
-  { name: 'Flash Strike', game: 'Valorant', status: 'Próximamente', date: '24 SEP 2026', teams: '24 equipos' },
-]
-const defaultTeams = [
-  { name: 'Blackout Esports', label: 'Equipo principal', number: '01', status: '' },
-  { name: 'Blackout Academy', label: 'Equipo de desarrollo', number: '02', status: '' },
-  { name: 'Blackout Game Changers', label: 'Escena competitiva femenina', number: '03', status: 'Próximamente' },
-]
 const CompetitionContext = createContext(null)
 
 export function CompetitionProvider({ children }) {
-  const { user, getAccessToken } = useAuth()
-  const [tournaments, setTournaments] = useState(defaultTournaments)
-  const [teams, setTeams] = useState(defaultTeams)
+  const { getAccessToken } = useAuth()
+  const [tournaments, setTournaments] = useState([])
+  const [teams, setTeams] = useState([])
   const [competitionLoading, setCompetitionLoading] = useState(false)
   const [competitionError, setCompetitionError] = useState('')
 
@@ -27,18 +18,10 @@ export function CompetitionProvider({ children }) {
   }, [getAccessToken])
 
   const reloadCompetition = useCallback(async () => {
-    if (!user) return
     setCompetitionLoading(true)
-    const token = await getAccessToken().catch(() => null)
-    if (!token) {
-      setCompetitionError('No fue posible obtener el access token para consultar los microservicios.')
-      setCompetitionLoading(false)
-      return
-    }
-
     const [tournamentsResult, rostersResult] = await Promise.allSettled([
-      tournamentsApi.list(token),
-      rostersApi.list(token),
+      tournamentsApi.list(),
+      rostersApi.list(),
     ])
     const errors = []
     if (tournamentsResult.status === 'fulfilled') setTournaments(tournamentsResult.value)
@@ -47,7 +30,7 @@ export function CompetitionProvider({ children }) {
     else errors.push(`Roster: ${rostersResult.reason.message}`)
     setCompetitionError(errors.join(' '))
     setCompetitionLoading(false)
-  }, [getAccessToken, user])
+  }, [])
 
   useEffect(() => { reloadCompetition() }, [reloadCompetition])
 

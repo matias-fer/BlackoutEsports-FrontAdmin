@@ -21,13 +21,11 @@ async function readError(response) {
 }
 
 export async function apiRequest(service, path, token, options = {}) {
-  if (!token) throw new Error('Inicia sesión para consultar los microservicios.')
-
   const response = await fetch(buildUrl(service, path), {
     ...options,
     headers: {
       Accept: 'application/json',
-      Authorization: `Bearer ${token}`,
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
       ...(options.body ? { 'Content-Type': 'application/json' } : {}),
       ...options.headers,
     },

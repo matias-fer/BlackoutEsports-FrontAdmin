@@ -1,13 +1,12 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from 'react'
-import initialPlayers from '../Pages/Players/playersData'
 import { playersApi } from '../api/players'
 import { useAuth } from '../auth/AuthProvider'
 
 const PlayersContext = createContext(null)
 
 export function PlayersProvider({ children }) {
-  const { user, getAccessToken } = useAuth()
-  const [players, setPlayers] = useState(initialPlayers)
+  const { getAccessToken } = useAuth()
+  const [players, setPlayers] = useState([])
   const [playersLoading, setPlayersLoading] = useState(false)
   const [playersError, setPlayersError] = useState('')
 
@@ -18,17 +17,16 @@ export function PlayersProvider({ children }) {
   }, [getAccessToken])
 
   const reloadPlayers = useCallback(async () => {
-    if (!user) return
     setPlayersLoading(true)
     try {
-      setPlayers(await withToken((token) => playersApi.list(token)))
+      setPlayers(await playersApi.list())
       setPlayersError('')
     } catch (error) {
       setPlayersError(error.message)
     } finally {
       setPlayersLoading(false)
     }
-  }, [user, withToken])
+  }, [])
 
   useEffect(() => { reloadPlayers() }, [reloadPlayers])
 
