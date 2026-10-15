@@ -4,10 +4,11 @@ import Navbar from 'react-bootstrap/Navbar'
 import { useState } from 'react'
 import { useAuth } from '../../auth/AuthProvider'
 import AuthModal from '../../auth/AuthModal'
+import NotificationMenu from './NotificationMenu'
 import './NavBar.css'
 
 function NavBar() {
-  const { user, isAdmin, logout } = useAuth()
+  const { user, isAdmin, logout, getAccessToken } = useAuth()
   const [isAuthOpen, setIsAuthOpen] = useState(false)
   const [isProfileOpen, setIsProfileOpen] = useState(false)
 
@@ -29,6 +30,7 @@ function NavBar() {
           </Nav>
           {user ? (
             <div className="site-navbar__account">
+              <NotificationMenu getAccessToken={getAccessToken} user={user} />
               <button
                 aria-expanded={isProfileOpen}
                 className="site-navbar__profile"
