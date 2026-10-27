@@ -319,3 +319,35 @@
     width: 100%;
   }
 }
+
+.admin-layout { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 24px; align-items: start; }
+.admin-sidebar { background: #151518; border: 1px solid #3b171c; border-radius: 10px; overflow: hidden; }
+.admin-sidebar nav { display: grid; }
+.admin-sidebar button, .admin-modes button { background: transparent; color: var(--text-muted); border: 0; padding: 16px; text-align: left; }
+.admin-sidebar nav button { display: flex; justify-content: space-between; gap: 12px; }
+.admin-sidebar button[aria-current], .admin-modes button[aria-pressed="true"] { background: #39171d; color: #fff; box-shadow: inset 3px 0 var(--red-bright); }
+.admin-sidebar button:hover, .admin-modes button:hover { color: #fff; background: #291317; }
+.admin-sidebar small { color: inherit; }
+.admin-content { min-width: 0; }
+.admin-content h3 { margin: 0 0 18px; color: var(--text-light); }
+.admin-content h4 { margin: 0 0 24px; color: var(--text-light); }
+.admin-modes { display: flex; gap: 8px; margin-bottom: 24px; border-bottom: 1px solid #3b171c; }
+.admin-modes button { min-width: 110px; text-align: center; }
+.admin-selector { display: grid; gap: 10px; margin-bottom: 20px; }
+.admin-selector select { width: 100%; padding: 12px; background: #151518; border: 1px solid #4a252a; color: var(--text-light); }
+.admin-feedback { background: #142b22; border: 1px solid #39765b; color: #c9f7df; padding: 16px; border-radius: 8px; overflow-wrap: anywhere; }
+.admin-page__account { overflow-wrap: anywhere; max-width: 100%; }
+.admin-confirm { background: #151518; color: var(--text-light); border: 1px solid #63303a; border-radius: 12px; padding: 28px; width: min(480px, calc(100vw - 32px)); max-height: 85dvh; overflow: auto; }
+.admin-confirm::backdrop { background: rgb(0 0 0 / 75%); }
+.admin-confirm p { overflow-wrap: anywhere; }
+.admin-confirm .admin-editor__actions { justify-content: flex-end; }
+.admin-menu-toggle { display: none; }
+.admin-page button:focus-visible, .admin-page select:focus-visible, .admin-page input:focus-visible { outline: 2px solid var(--red-bright); outline-offset: 3px; }
+@media (max-width: 760px) {
+  .admin-layout { grid-template-columns: minmax(0, 1fr); }
+  .admin-menu-toggle { display: block; width: 100%; }
+  .admin-sidebar nav { display: none; }
+  .admin-sidebar nav.is-open { display: grid; }
+  .admin-page__heading { align-items: start; flex-direction: column; }
+  .admin-editor__grid { grid-template-columns: minmax(0, 1fr); }
+}

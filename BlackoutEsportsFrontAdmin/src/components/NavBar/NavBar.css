@@ -257,3 +257,5 @@
   display: block;
   font-size: 0.8rem;
 }
+
+.site-navbar { position: sticky; top: 0; z-index: 100; }
