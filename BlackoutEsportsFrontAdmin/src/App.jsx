@@ -6,11 +6,12 @@ import Home from './Pages/Home/Home'
 const Players = lazy(() => import('./Pages/Players/Players'))
 const Roster = lazy(() => import('./Pages/Roster/Roster'))
 const Tournaments = lazy(() => import('./Pages/Tournaments/Tournaments'))
+const Academy = lazy(() => import('./Pages/Academy/Academy'))
 const Admin = lazy(() => import('./Pages/Admin/Admin'))
 
 function getPageFromHash() {
   const page = window.location.hash.slice(1)
-  return ['jugadores', 'torneos', 'roster', 'admin'].includes(page) ? page : 'inicio'
+  return ['jugadores', 'torneos', 'roster', 'admin', 'academy'].includes(page) ? page : 'inicio'
 }
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
     jugadores: <Players />,
     torneos: <Tournaments />,
     roster: <Roster />,
+    academy: <Academy />,
     admin: <Admin />,
   }[currentPage]
 
