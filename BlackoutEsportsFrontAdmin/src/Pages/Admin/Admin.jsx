@@ -131,6 +131,7 @@ function Admin() {
         <aside className="admin-sidebar">
           <button type="button" className="admin-menu-toggle" aria-expanded={mobileMenu} aria-controls="admin-sections" onClick={() => setMobileMenu(!mobileMenu)}>Secciones · {config.label}</button>
           <nav id="admin-sections" aria-label="Secciones de administración" className={mobileMenu ? 'is-open' : ''}>
+            <a className="btn btn-outline-light" href="#partidos">Administrar partidos</a>
             <a className="btn btn-outline-light" href="#academy">Postulaciones Academy</a>
             {Object.entries(settings).map(([key, item]) => <button key={key} type="button" aria-current={section === key ? 'page' : undefined} onClick={() => { setSection(key); setMobileMenu(false); setNotice(null) }}>
               <span>{item.label}</span><small>{item.records.length}</small>

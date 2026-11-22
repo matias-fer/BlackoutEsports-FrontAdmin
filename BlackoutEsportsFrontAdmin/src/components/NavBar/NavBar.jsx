@@ -26,6 +26,7 @@ function NavBar() {
             <Nav.Link href="#jugadores">Jugadores</Nav.Link>
             <Nav.Link href="#torneos">Torneos</Nav.Link>
             <Nav.Link href="#roster">Roster</Nav.Link>
+            <Nav.Link href="#partidos">Partidos en vivo</Nav.Link>
             <Nav.Link href="#academy">Academy</Nav.Link>
             {isAdmin && <Nav.Link href="#admin">Panel admin</Nav.Link>}
           </Nav>
