@@ -1,0 +1,24 @@
+name: Verificar frontend y plan del Gateway
+on:
+  push:
+    branches: [feature-entrega-final]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: BlackoutEsportsFrontAdmin/package-lock.json
+      - run: npm ci
+        working-directory: BlackoutEsportsFrontAdmin
+      - run: npm test -- --run
+        working-directory: BlackoutEsportsFrontAdmin
+      - run: npm run build
+        working-directory: BlackoutEsportsFrontAdmin
+      - run: python3 -m unittest discover -s deploy -p 'test_*.py'

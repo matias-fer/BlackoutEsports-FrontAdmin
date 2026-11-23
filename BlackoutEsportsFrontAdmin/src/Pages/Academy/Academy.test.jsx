@@ -32,3 +32,14 @@ it('permite al staff rechazar después de confirmar', async () => {
   }))
   await screen.findByText('Rechazada')
 })
+
+it('el staff puede consultar el registro recibido de forma asíncrona', async () => {
+  useAuth.mockReturnValue({ user: { source: 'entra' }, isAdmin: true, getAccessToken: async () => 'staff' })
+  apiRequest.mockResolvedValueOnce([{ id: '123', alias: 'Luna', game: 'Valorant', decision: 'REJECTED' }])
+    .mockResolvedValueOnce([{ applicationId: '123', decision: 'REJECTED', decidedAt: '2026-11-22T12:00:00Z' }])
+  render(<Academy />)
+  await screen.findByText('Luna · Valorant')
+  fireEvent.click(screen.getByText('Ver registro de decisiones'))
+  await screen.findByRole('region', { name: 'Registro de decisiones' })
+  expect(apiRequest).toHaveBeenCalledWith('users', '/api/academy/applications/audit', 'staff')
+})

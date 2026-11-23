@@ -53,6 +53,7 @@ function Workspace({ staff }) {
   const [busy, setBusy] = useState(false)
   const [reload, setReload] = useState(0)
   const [filter, setFilter] = useState('ALL')
+  const [audit, setAudit] = useState(null)
   useEffect(() => {
     let active = true
     setError('')
@@ -72,14 +73,30 @@ function Workspace({ staff }) {
     finally { setBusy(false) }
   }
   const visible = (rows || []).filter(a => !staff || filter === 'ALL' || a.decision === filter)
+  async function loadAudit() {
+    setBusy(true)
+    setError('')
+    try {
+      setAudit(await apiRequest('users', '/api/academy/applications/audit', await getAccessToken()))
+    } catch (e) { setError(e.message) }
+    finally { setBusy(false) }
+  }
   return <>
     <div className="d-flex gap-3 align-items-center mb-3">
       <button className="btn btn-outline-light" disabled={busy} onClick={() => setReload(n => n + 1)}>Actualizar estado</button>
+      {staff && <button className="btn btn-outline-light" disabled={busy} onClick={loadAudit}>Ver registro de decisiones</button>}
       {staff && <label>Mostrar <select value={filter} onChange={e => setFilter(e.target.value)}>
         <option value="ALL">Todas las postulaciones</option><option value="PENDING">Pendientes</option>
       </select></label>}
     </div>
     {error && <p role="alert">{error}</p>}
+    {staff && audit && <section className="card bg-dark text-light border-secondary p-3 mb-3" aria-label="Registro de decisiones">
+      <h3>Registro de decisiones</h3>
+      {!audit.length && <p>Todavía no hay decisiones registradas.</p>}
+      <ul>{audit.map(entry => <li key={entry.applicationId}>
+        {rows?.find(a => a.id === entry.applicationId)?.alias || 'Postulación archivada'} · {decisions[entry.decision]} · {chile.format(new Date(entry.decidedAt))}
+      </li>)}</ul>
+    </section>}
     {rows === null && !error && <p>Cargando postulaciones…</p>}
     {staff && rows && !visible.length && <p>No hay postulaciones para esta selección.</p>}
     {visible.map(a => <Application key={a.id} application={a} staff={staff} save={save} busy={busy} />)}

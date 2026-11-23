@@ -12,7 +12,7 @@ function NotificationMenu({ getAccessToken, user }) {
     try {
       const token = await getAccessToken()
       if (!token) throw new Error('No fue posible obtener la sesión.')
-      setNotifications(await notificationsApi.list(token))
+      setNotifications(await notificationsApi.list(token, user.source))
       setStatus('ready')
     } catch {
       setStatus('error')

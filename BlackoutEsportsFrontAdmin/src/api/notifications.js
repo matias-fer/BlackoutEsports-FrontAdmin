@@ -1,5 +1,5 @@
 import { apiRequest } from './client'
 
 export const notificationsApi = {
-  list: (token) => apiRequest('users', '/api/notifications', token),
+  list: (token, source) => apiRequest('users', source === 'entra' ? '/api/notifications/staff' : '/api/notifications', token),
 }

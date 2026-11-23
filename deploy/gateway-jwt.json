@@ -1,0 +1,18 @@
+{
+  "api_id": "r05yg2paek",
+  "region": "us-east-1",
+  "authorizers": {
+    "entra": {
+      "name": "blackout-entra-final",
+      "issuer": "https://login.microsoftonline.com/b2138bdd-2b45-4b5d-9596-cb73c98c0700/v2.0",
+      "audience": ["bf721fb4-6744-463e-b6cc-dba54c162ed2"],
+      "scopes": ["PanelAdministrativo"]
+    },
+    "cognito": {
+      "name": "blackout-cognito-final",
+      "issuer": "https://cognito-idp.us-east-1.amazonaws.com/us-east-1_LyGg6mxST",
+      "audience": ["7hr6u39bkudjjchpshfde22876"],
+      "scopes": ["openid"]
+    }
+  }
+}
