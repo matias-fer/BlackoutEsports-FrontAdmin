@@ -1,0 +1,8 @@
+services:
+  rabbit-admin-api:
+    environment:
+      JAVA_TOOL_OPTIONS: -Xms64m -Xmx256m
+      CORS_ORIGINS: ${CORS_ORIGINS}
+networks:
+  blackout-network:
+    external: true

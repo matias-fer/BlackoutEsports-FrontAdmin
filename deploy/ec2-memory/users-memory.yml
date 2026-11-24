@@ -1,0 +1,4 @@
+services:
+  api:
+    environment:
+      JAVA_TOOL_OPTIONS: -Xms64m -Xmx384m

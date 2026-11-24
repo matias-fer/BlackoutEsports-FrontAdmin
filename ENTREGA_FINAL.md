@@ -2,7 +2,7 @@
 
 ## Qué contiene esta versión
 
-La rama feature-entrega-final reúne Academy (RabbitMQ) y Partidos en vivo (Kafka). No equivale a un despliegue ya realizado: la web anterior permanece en la rama de entrega 2 hasta publicar y verificar la nueva. El usuario pidió trabajar con AWS apagado y no autorizó aumentar la instancia.
+La rama feature-entrega-final reúne Academy (RabbitMQ) y Partidos en vivo (Kafka). El 23 de noviembre se desplegó en AWS con autorización del usuario: EC2 t3.large (8 GiB), dos nodos RabbitMQ y tres brokers Kafka con tres ZooKeeper. Para conservar la URL y los callbacks, la rama de Amplify feature-entrega-2-rabbitmq avanzó al commit final 05ca66d; su versión anterior se conserva en backup-entrega-2-2026-11-23. Publicación Amplify 5 completada. Esto no sustituye las pruebas funcionales con usuarios reales.
 
 Repositorios y referencias:
 
@@ -86,14 +86,16 @@ El resultado válido es el último workflow del commit entregado. Un workflow ve
 
 ## Pendientes que requieren el entorno real
 
-1. Capacidad: la t3.small dejó 221 MB disponibles y usaba swap. No levantar todo allí sin resolver recursos. No se autorizó ampliarla.
+1. Capacidad resuelta para este ensayo: t3.large con 8 GiB; 21 contenedores y unos 3,2 GiB disponibles al comprobar. Mantener el laboratorio activo solo durante el trabajo y vigilar consumo y disco.
 2. Configurar un remitente/proveedor SMTP y verificar recepción externa. Mailpit prueba el protocolo y contenido, no entrega a Gmail/Outlook.
-3. Preparar migración del RabbitMQ antiguo al clúster nuevo conservando mensajes y volumen anterior. No usar down -v con datos reales.
-4. Desplegar Users, Torneos, scoreboard, administradores, clusters y nueva rama Amplify. Registrar su URL SPA en Entra y callbacks/logout en Cognito; actualizar CORS.
-5. Revisar y aplicar el plan deploy/gateway_jwt.py al HTTP API existente; probar JWT reales, rutas públicas, fans y staff. La autorización de roles sigue en los backends.
+3. Migración realizada: cola anterior de novedades vacía antes del cambio; mensaje de prueba en DLQ exportado y conservado en el volumen antiguo. RabbitMQ anterior detenido, no eliminado. No usar down -v con datos reales.
+4. Users, Torneos, scoreboard, administradores, clusters y frontend publicados. Código del servidor en /home/ubuntu/blackout-final; bases existentes conservadas. Kafka Admin corregido en a9a25e4 y arrancado correctamente. Los dos topics tienen tres particiones y tres réplicas sincronizadas. RabbitMQ tiene ambos nodos activos sin alarmas.
+5. Plan deploy/gateway_jwt.py aplicado. Lecturas públicas comprobadas y rutas Academy sin sesión rechazadas con 401. Falta probar JWT reales de fans y staff. La autorización de roles sigue en los backends.
 6. Hacer la prueba completa con dos navegadores y guardar evidencias del entorno final.
 
 Dos nodos quorum RabbitMQ no toleran perder uno: falta mayoría. Tres brokers Kafka en una sola EC2 tampoco toleran perder esa EC2. Se distingue tolerancia a proceso/broker de tolerancia al host.
+
+El consumidor de correo permanece deshabilitado hasta configurar SMTP real. No se ha demostrado entrega a buzones externos. Los respaldos previos están fuera del repositorio porque contienen configuración privada. Se conservó la IP elástica y se añadió la ruta Nginx /kafka-admin/ sin publicar puertos de brokers. Los límites de memoria usados se guardan en deploy/ec2-memory.
 
 ## Guion de demostración (5–10 minutos)
 

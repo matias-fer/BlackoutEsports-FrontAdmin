@@ -1,0 +1,7 @@
+services:
+  kafka-admin:
+    environment:
+      JAVA_TOOL_OPTIONS: -Xms64m -Xmx256m
+  kafka-ui:
+    environment:
+      JAVA_OPTS: -Xms64m -Xmx256m
